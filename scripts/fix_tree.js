@@ -104,6 +104,11 @@ async function fixTree(msaText, treeText) {
         );
 
 
+    alert(
+    "Tree taxa: " + treeTaxa.length +
+    "\nMSA taxa: " + msaTaxa.length +
+    "\nTaxa to remove: " + taxaToRemove.join(", ")
+    );
     console.log("Tree taxa:", treeTaxa);
     console.log("MSA taxa:", msaTaxa);
     console.log("Taxa to remove:", taxaToRemove);
