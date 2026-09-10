@@ -1,3 +1,4 @@
+console.log("fix_tree.js loaded");
 let removeTaxaModule = null;
 
 async function initializeRemoveTaxa() {
