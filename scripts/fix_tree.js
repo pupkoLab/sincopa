@@ -226,7 +226,7 @@ document.addEventListener(
 
 
                     /*
-                     * Save result for results.html
+                     * Save result for results_fix_tree.html
                      */
                     sessionStorage.setItem(
                         "fixedTree",
@@ -247,7 +247,7 @@ document.addEventListener(
 
 
                     window.location.href =
-                        "results.html";
+                        "results_fix_tree.html";
 
                 }
                 catch (error) {
