@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SINCOPA Results</title>
+</head>
 
+<body>
+
+<h1>SINCOPA Results</h1>
+
+<h3>Fixed phylogenetic tree</h3>
+
+<pre id="treePreview"></pre>
+
+<p>
+    <a id="downloadTree">
+        Download fixed tree
+    </a>
+</p>
+
+<p id="removedTaxa"></p>
+
+<p>
+    <a href="index.html">Run another analysis</a>
+</p>
+
+<script>
+
+const fixedTree =
+    sessionStorage.getItem("fixedTree");
+
+const originalTreeName =
+    sessionStorage.getItem("originalTreeName");
+
+const removedTaxa =
+    JSON.parse(
+        sessionStorage.getItem("taxaRemoved") || "[]"
+    );
+
+
+if (!fixedTree) {
+
+    document.getElementById("treePreview")
+        .textContent = "No result available.";
+
+}
+else {
+
+    document.getElementById("treePreview")
+        .textContent = fixedTree;
+
+    let outputName = "tree_fixed.newick";
+
+    if (originalTreeName) {
+
+        const dot =
+            originalTreeName.lastIndexOf(".");
+
+        if (dot !== -1) {
+
+            outputName =
+                originalTreeName.substring(0, dot) +
+                "_fixed" +
+                originalTreeName.substring(dot);
+
+        }
+        else {
+
+            outputName =
+                originalTreeName + "_fixed.newick";
+        }
+    }
+
+
+    const blob =
+        new Blob(
+            [fixedTree],
+            { type: "text/plain" }
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.getElementById("downloadTree");
+
+    link.href = url;
+    link.download = outputName;
+}
+
+
+if (removedTaxa.length) {
+
+    document.getElementById("removedTaxa")
+        .textContent =
+            "Removed taxa: " +
+            removedTaxa.join(", ");
+
+}
+else {
+
+    document.getElementById("removedTaxa")
+        .textContent =
+            "No taxa were removed.";
+}
+
+</script>
+
+</body>
+</html>
