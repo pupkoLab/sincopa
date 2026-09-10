@@ -1,3 +1,4 @@
+alert("fix_tree.js loaded");
 console.log("fix_tree.js loaded");
 let removeTaxaModule = null;
 
