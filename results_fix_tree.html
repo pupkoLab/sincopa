@@ -31,13 +31,12 @@ const fixedTree =
     sessionStorage.getItem("fixedTree");
 
 const originalTreeName =
-    sessionStorage.getItem("originalTreeName");
+    sessionStorage.getItem("treeFileName");
 
 const removedTaxa =
     JSON.parse(
-        sessionStorage.getItem("taxaRemoved") || "[]"
+        sessionStorage.getItem("taxaToRemove") || "[]"
     );
-
 
 if (!fixedTree) {
 
