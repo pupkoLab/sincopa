@@ -1,4 +1,3 @@
-alert("fix_tree.js loaded");
 console.log("fix_tree.js loaded");
 let removeTaxaModule = null;
 
@@ -103,12 +102,6 @@ async function fixTree(msaText, treeText) {
             taxon => !msaSet.has(taxon)
         );
 
-
-    alert(
-    "Tree taxa: " + treeTaxa.length +
-    "\nMSA taxa: " + msaTaxa.length +
-    "\nTaxa to remove: " + taxaToRemove.join(", ")
-    );
     console.log("Tree taxa:", treeTaxa);
     console.log("MSA taxa:", msaTaxa);
     console.log("Taxa to remove:", taxaToRemove);
