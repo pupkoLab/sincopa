@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MPreconstruct WASM Test</title>
+</head>
+
+<body>
+
+<h1>MPreconstruct WASM Test</h1>
+
+<p>
+    MSA:
+    <input type="file" id="msaFile">
+</p>
+
+<p>
+    Tree:
+    <input type="file" id="treeFile">
+</p>
+
+<button id="runButton">Run MPreconstruct</button>
+
+<h3>Output</h3>
+<pre id="output"></pre>
+
+<script src="MPreconstruct.js"></script>
+
+<script>
+
+let mpModule = null;
+
+async function initialize() {
+    mpModule = await createMPreconstructModule({
+        noInitialRun: true
+    });
+
+    document.getElementById("output").textContent =
+        "MPreconstruct WebAssembly ready.";
+}
+
+initialize();
+
+
+document.getElementById("runButton").addEventListener(
+    "click",
+    async function () {
+
+        try {
+
+            if (!mpModule)
+                throw new Error("MPreconstruct is still loading.");
+
+            const msaFile =
+                document.getElementById("msaFile").files[0];
+
+            const treeFile =
+                document.getElementById("treeFile").files[0];
+
+            if (!msaFile || !treeFile)
+                throw new Error("Please select both MSA and tree files.");
+
+            const msaText = await msaFile.text();
+            const treeText = await treeFile.text();
+
+            const FS = mpModule.FS;
+
+            const msaPath = "/msa.fasta";
+            const treePath = "/tree.newick";
+            const controlPath = "/control.txt";
+            const outputPath = "/homoplasy.txt";
+
+            const logPath = "/control.log";
+            const mpOutputPath = "/control.out";
+
+
+            // Remove files left from an earlier run
+            for (const path of [
+                msaPath,
+                treePath,
+                controlPath,
+                outputPath,
+                logPath,
+                mpOutputPath
+            ]) {
+                try {
+                    FS.unlink(path);
+                }
+                catch (e) {}
+            }
+
+
+            FS.writeFile(msaPath, msaText);
+            FS.writeFile(treePath, treeText);
+
+
+            const controlText =
+`### parameters for MPreconstruct
+
+## in and out files
+_treefile ${treePath}
+_seqfile ${msaPath}
+_logfile ${logPath}
+_outfile ${mpOutputPath}
+
+## types are: nuc, amino, threeState, integer
+_alphabetType nuc
+
+## alphabet: a, c, g, t, and -
+_alphabetSize 5
+
+## types are: file,fitch,diff,diffSquare
+_costMatrixType fitch`;
+
+
+            FS.writeFile(controlPath, controlText);
+
+
+            document.getElementById("output").textContent =
+                "Running MPreconstruct...";
+
+
+            mpModule.callMain([
+                controlPath,
+                outputPath
+            ]);
+
+
+            const result =
+                FS.readFile(
+                    outputPath,
+                    { encoding: "utf8" }
+                );
+
+
+            document.getElementById("output").textContent =
+                result;
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById("output").textContent =
+                "ERROR:\n" + error.message;
+        }
+    }
+);
+
+</script>
+
+</body>
+</html>
