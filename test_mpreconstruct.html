@@ -21,6 +21,12 @@
 
 <button id="runButton">Run MPreconstruct</button>
 
+<p>
+    <a id="downloadHomoplasy" style="display:none;">
+        Download homoplasy.txt
+    </a>
+</p>
+
 <h3>Output</h3>
 <pre id="output"></pre>
 
@@ -135,6 +141,22 @@ _costMatrixType fitch`;
 
             document.getElementById("output").textContent =
                 result;
+
+            const blob =
+                new Blob(
+                    [result],
+                    { type: "text/plain" }
+                );
+            
+            const url =
+                URL.createObjectURL(blob);
+            
+            const downloadLink =
+                document.getElementById("downloadHomoplasy");
+            
+            downloadLink.href = url;
+            downloadLink.download = "homoplasy.txt";
+            downloadLink.style.display = "inline";
 
         }
         catch (error) {
