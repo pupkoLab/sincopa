@@ -237,7 +237,16 @@ document.addEventListener(
                             msaText,
                             300
                         );
-                    
+
+                    /*
+                     * Step 3:
+                     * compute homoplasy
+                     */
+                    const homoplasyResult =
+                        await computeHomoplasy(
+                            msaResult.fixedMsa,
+                            treeResult.fixedTree
+                        );
                     
                     /*
                      * Save fixed tree
@@ -283,6 +292,18 @@ document.addEventListener(
                         msaResult.trimmedLength
                     );
                     
+                    /*
+                     * Save homoplasy results
+                     */
+                    sessionStorage.setItem(
+                        "homoplasyText",
+                        homoplasyResult.homoplasyText
+                    );
+                    
+                    sessionStorage.setItem(
+                        "controlText",
+                        homoplasyResult.controlText
+                    );
                     
                     /*
                      * Go to results page
