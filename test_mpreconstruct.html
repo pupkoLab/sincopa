@@ -30,6 +30,12 @@
 <h3>Output</h3>
 <pre id="output"></pre>
 
+<p>
+    <a id="downloadControl" style="display:none;">
+        Download control.txt
+    </a>
+</p>
+    
 <script src="MPreconstruct.js"></script>
 
 <script>
@@ -158,6 +164,28 @@ _costMatrixType fitch`;
             downloadLink.download = "homoplasy.txt";
             downloadLink.style.display = "inline";
 
+            const controlResult =
+                FS.readFile(
+                    controlPath,
+                    { encoding: "utf8" }
+                );
+            
+            const controlBlob =
+                new Blob(
+                    [controlResult],
+                    { type: "text/plain" }
+                );
+            
+            const controlUrl =
+                URL.createObjectURL(controlBlob);
+            
+            const controlLink =
+                document.getElementById("downloadControl");
+            
+            controlLink.href = controlUrl;
+            controlLink.download = "control.txt";
+            controlLink.style.display = "inline";
+            
         }
         catch (error) {
 
