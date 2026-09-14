@@ -217,35 +217,76 @@ document.addEventListener(
                     const treeText =
                         await treeFile.text();
 
-
-                    const result =
+                    /*
+                     * Step 1:
+                     * fix tree using the ORIGINAL MSA
+                     */
+                    const treeResult =
                         await fixTree(
                             msaText,
                             treeText
                         );
-
-
+                    
+                    
                     /*
-                     * Save result for results_fix_tree.html
+                     * Step 2:
+                     * fix MSA
+                     */
+                    const msaResult =
+                        fixMsa(
+                            msaText,
+                            300
+                        );
+                    
+                    
+                    /*
+                     * Save fixed tree
                      */
                     sessionStorage.setItem(
                         "fixedTree",
-                        result.fixedTree
+                        treeResult.fixedTree
                     );
-
+                    
                     sessionStorage.setItem(
                         "taxaToRemove",
                         JSON.stringify(
-                            result.taxaToRemove
+                            treeResult.taxaToRemove
                         )
                     );
-
+                    
                     sessionStorage.setItem(
                         "treeFileName",
                         treeFile.name
                     );
-
-
+                    
+                    
+                    /*
+                     * Save fixed MSA
+                     */
+                    sessionStorage.setItem(
+                        "fixedMsa",
+                        msaResult.fixedMsa
+                    );
+                    
+                    sessionStorage.setItem(
+                        "msaFileName",
+                        msaFile.name
+                    );
+                    
+                    sessionStorage.setItem(
+                        "msaOriginalLength",
+                        msaResult.originalLength
+                    );
+                    
+                    sessionStorage.setItem(
+                        "msaTrimmedLength",
+                        msaResult.trimmedLength
+                    );
+                    
+                    
+                    /*
+                     * Go to results page
+                     */
                     window.location.href =
                         "results_fix_tree.html";
 
