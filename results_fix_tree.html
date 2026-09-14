@@ -29,12 +29,15 @@
     </a>
 </p>
 
+<a id="downloadHomoplasy">Download homoplasy.txt</a>
+<a id="downloadControl">Download control.txt</a>
+    
 <p id="removedTaxa"></p>
     
 <p>
     <a href="index.html">Run another analysis</a>
 </p>
-
+    
 <script>
 
 /* tree vars */
@@ -61,6 +64,12 @@ const msaOriginalLength =
 
 const msaTrimmedLength =
     sessionStorage.getItem("msaTrimmedLength");
+
+const homoplasyText =
+    sessionStorage.getItem("homoplasyText");
+
+const controlText =
+    sessionStorage.getItem("controlText");
     
 if (!fixedTree) {
 
@@ -170,7 +179,7 @@ else {
     document.getElementById("downloadMsa")
         .style.display = "none";
 }
-    
+
 if (removedTaxa.length) {
 
     document.getElementById("removedTaxa")
@@ -186,6 +195,79 @@ else {
             "No taxa were removed.";
 }
 
+/*
+ * ---------------------------------------------------------
+ * homoplasy.txt
+ * ---------------------------------------------------------
+ */
+if (homoplasyText) {
+
+    const homoplasyBlob =
+        new Blob(
+            [homoplasyText],
+            { type: "text/plain" }
+        );
+
+    const homoplasyUrl =
+        URL.createObjectURL(
+            homoplasyBlob
+        );
+
+    const homoplasyLink =
+        document.getElementById(
+            "downloadHomoplasy"
+        );
+
+    homoplasyLink.href =
+        homoplasyUrl;
+
+    homoplasyLink.download =
+        "homoplasy.txt";
+}
+else {
+
+    document.getElementById("downloadHomoplasy")
+        .style.display =
+            "none";
+}
+
+
+/*
+ * ---------------------------------------------------------
+ * control.txt
+ * ---------------------------------------------------------
+ */
+if (controlText) {
+
+    const controlBlob =
+        new Blob(
+            [controlText],
+            { type: "text/plain" }
+        );
+
+    const controlUrl =
+        URL.createObjectURL(
+            controlBlob
+        );
+
+    const controlLink =
+        document.getElementById(
+            "downloadControl"
+        );
+
+    controlLink.href =
+        controlUrl;
+
+    controlLink.download =
+        "control.txt";
+}
+else {
+
+    document.getElementById("downloadControl")
+        .style.display =
+            "none";
+}
+    
 </script>
 
 </body>
