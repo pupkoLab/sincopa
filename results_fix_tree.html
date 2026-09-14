@@ -19,14 +19,25 @@
     </a>
 </p>
 
-<p id="removedTaxa"></p>
+<h3>Fixed MSA</h3>
 
+<p id="msaInfo"></p>
+
+<p>
+    <a id="downloadMsa">
+        Download fixed MSA
+    </a>
+</p>
+
+<p id="removedTaxa"></p>
+    
 <p>
     <a href="index.html">Run another analysis</a>
 </p>
 
 <script>
 
+/* tree vars */
 const fixedTree =
     sessionStorage.getItem("fixedTree");
 
@@ -38,6 +49,19 @@ const removedTaxa =
         sessionStorage.getItem("taxaToRemove") || "[]"
     );
 
+/* msa vars */
+const fixedMsa =
+    sessionStorage.getItem("fixedMsa");
+
+const originalMsaName =
+    sessionStorage.getItem("msaFileName");
+
+const msaOriginalLength =
+    sessionStorage.getItem("msaOriginalLength");
+
+const msaTrimmedLength =
+    sessionStorage.getItem("msaTrimmedLength");
+    
 if (!fixedTree) {
 
     document.getElementById("treePreview")
@@ -88,7 +112,65 @@ else {
     link.download = outputName;
 }
 
+if (fixedMsa) {
 
+    let msaOutputName = "msa_fixed.fasta";
+
+    if (originalMsaName) {
+
+        const dot =
+            originalMsaName.lastIndexOf(".");
+
+        if (dot !== -1) {
+
+            msaOutputName =
+                originalMsaName.substring(0, dot) +
+                "_fixed" +
+                originalMsaName.substring(dot);
+
+        }
+        else {
+
+            msaOutputName =
+                originalMsaName + "_fixed.fasta";
+        }
+    }
+
+
+    const msaBlob =
+        new Blob(
+            [fixedMsa],
+            { type: "text/plain" }
+        );
+
+    const msaUrl =
+        URL.createObjectURL(msaBlob);
+
+    const msaLink =
+        document.getElementById("downloadMsa");
+
+    msaLink.href = msaUrl;
+    msaLink.download = msaOutputName;
+
+
+    document.getElementById("msaInfo")
+        .textContent =
+            "MSA length: " +
+            msaOriginalLength +
+            " bp → " +
+            msaTrimmedLength +
+            " bp after trimming.";
+}
+else {
+
+    document.getElementById("msaInfo")
+        .textContent =
+            "No fixed MSA available.";
+
+    document.getElementById("downloadMsa")
+        .style.display = "none";
+}
+    
 if (removedTaxa.length) {
 
     document.getElementById("removedTaxa")
