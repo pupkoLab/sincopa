@@ -193,6 +193,9 @@ document.addEventListener(
 
                 try {
 
+                    const jobTitle =
+                        document.getElementById("job_title").value.trim();
+                    
                     const msaFile =
                         document.getElementById("msa_file").files[0];
 
@@ -331,6 +334,8 @@ document.addEventListener(
                         "sweepsPlot",
                         sweepsResult.plotDataUrl
                     );
+
+                    sessionStorage.setItem("jobTitle", jobTitle);
                     
                     /*
                      * Go to results page
