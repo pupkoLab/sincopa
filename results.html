@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SINCOPA</title>
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+        <meta name="robots" content="noindex, nofollow">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/nav.css">
+        <link rel="shortcut icon" type="image/x-icon" href="pics/logo.png" />
+
+        <!--files for advanced options activation-->
+        <script src="scripts/form_handler.js"></script>
+
+        <!--files for selectpicker-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <!--files for the select tag-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
+        <!--files for the checkbox tag (toggle)-->
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+    </head>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script>
+      const fixedMsa =
+          sessionStorage.getItem("fixedMsa");
+      
+      const fixedTree =
+          sessionStorage.getItem("fixedTree");
+      
+      const homoplasyText =
+          sessionStorage.getItem("homoplasyText");
+      
+      const sweepsScoresText =
+          sessionStorage.getItem("sweepsScoresText");
+      
+      const sweepsSummaryText =
+          sessionStorage.getItem("sweepsSummaryText");
+      
+      const sweepsPlot =
+          sessionStorage.getItem("sweepsPlot");
+      
+      const msaFileName =
+          sessionStorage.getItem("msaFileName");
+      
+      const treeFileName =
+          sessionStorage.getItem("treeFileName");
+      
+      
+      // --------------------------------------------------
+      // Running parameters
+      // --------------------------------------------------
+      
+      document.getElementById("msaName").textContent =
+          msaFileName || "raw text";
+      
+      document.getElementById("treeName").textContent =
+          treeFileName || "raw text";
+      
+      
+      // Job title, if we later store one
+      const jobTitle =
+          sessionStorage.getItem("jobTitle");
+      
+      if (jobTitle) {
+          document.getElementById("jobTitle").textContent =
+              jobTitle;
+      
+          document.getElementById("jobTitleRow").style.display =
+              "block";
+      }
+      
+      
+      // --------------------------------------------------
+      // Plot
+      // --------------------------------------------------
+      
+      if (sweepsPlot) {
+          document.getElementById("sweeps_scores").src =
+              sweepsPlot;
+      } else {
+          document.getElementById("sweeps_scores").style.display =
+              "none";
+      }
+      
+      
+      // --------------------------------------------------
+      // ZIP
+      // --------------------------------------------------
+      
+      document.getElementById("downloadAllResults").addEventListener(
+          "click",
+          async function(event) {
+      
+              event.preventDefault();
+      
+              const zip = new JSZip();
+      
+              if (fixedMsa) {
+                  zip.file(
+                      "msa_fixed.fasta",
+                      fixedMsa
+                  );
+              }
+      
+              if (fixedTree) {
+                  zip.file(
+                      "tree_fixed.newick",
+                      fixedTree
+                  );
+              }
+      
+              if (homoplasyText) {
+                  zip.file(
+                      "homoplasy.txt",
+                      homoplasyText
+                  );
+              }
+      
+              if (sweepsScoresText) {
+                  zip.file(
+                      "sweeps_scores.txt",
+                      sweepsScoresText
+                  );
+              }
+      
+              if (sweepsSummaryText) {
+                  zip.file(
+                      "sweeps_summary.txt",
+                      sweepsSummaryText
+                  );
+              }
+      
+              if (sweepsPlot) {
+      
+                  const base64 =
+                      sweepsPlot.split(",")[1];
+      
+                  zip.file(
+                      "sweeps_scores.png",
+                      base64,
+                      { base64: true }
+                  );
+              }
+      
+              const zipBlob =
+                  await zip.generateAsync({
+                      type: "blob"
+                  });
+      
+              const url =
+                  URL.createObjectURL(zipBlob);
+      
+              const link =
+                  document.createElement("a");
+      
+              link.href = url;
+              link.download = "sincopa_results.zip";
+      
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+      
+              URL.revokeObjectURL(url);
+          }
+      );
+    </script>
+  
+    <body>
+        <nav role="navigation" class="navbar navbar-inverse navbar-fixed-top" id="nav">
+            <div class="jumbotron" id="jumbo">
+                <div class="container">
+                    <div class="row" id="title-row">
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-10">
+                            <span >&nbsp;&nbsp;&nbsp;<img src="pics/logo.png" id="logo_image" class="img-rounded"></span>&nbsp;&nbsp;
+                            <br>
+                            <span id="sub-title"><b>Detecting selective sweeps in bacteria based on <i>Similarity of INCOngruent PAtterns</i></b></span><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container" id="nav_container">
+                <div class="row">
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-9">
+                        <ul class="nav navbar-nav" id="menu-nav">
+                            <li class="active">
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li>
+                                <a href="overview.html">Overview</a>
+                            </li>
+                            <li>
+                                <a href="terms.html">Terms of Use</a>
+                            </li>
+                            <li>
+                                <a href="credits.html">Credits</a>
+                            </li>
+                            <li>
+                                <a href="https://english.tau.ac.il/" id="tau-link" target="_blank">
+                                    <img src=pics/TAU_LOGO.png id="tau-logo"> 
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- running parameters section -->
+
+        <div class="container"
+             id="runningParameters"
+             style="width: 850px; margin: 0 auto; font-size: 20px;">
+        
+            <div class="row"
+                 id="jobTitleRow"
+                 style="font-size: 20px; display: none;">
+                <div class="col-md-12">
+                    <h2><b id="jobTitle"></b></h2>
+                </div>
+            </div>
+        
+            <div class="row" style="font-size: 20px;">
+                <div class="col-md-12">
+                    <b>Multiple sequence alignment:</b>
+                    <span id="msaName"></span>
+                </div>
+            </div>
+        
+            <div class="row" style="font-size: 20px;">
+                <div class="col-md-12">
+                    <b>Phylogenetic tree:</b>
+                    <span id="treeName"></span>
+                </div>
+            </div>
+        
+        </div>
+        
+        <br>
+        
+        <!-- results section -->
+        
+        <div class="container"
+             style="width: 850px; margin: 0 auto; font-size: 20px;"
+             align="center">
+        
+            <h3>
+                <b>
+                    <a id="downloadAllResults" href="#">
+                        Download zipped full results (textual &amp; visual)
+                    </a>
+                </b>
+            </h3>
+        
+            <br>
+        
+            <img id="sweeps_scores"
+                 alt="SINCOPA sweep scores"
+                 style="max-width: 100%;">
+        </div>
+       
+        <nav role="navigation" class="navbar-inverse navbar-fixed-bottom ng-binding" style="color: #cccccc; text-align: center; font-family: Calibri;">
+            <h4>
+                    Research Site | <a href="https://www.tau.ac.il/~talp/" target="_blank">Pupko Group</a>
+            </h4>
+        </nav>
+    </body>
+</html>
