@@ -1025,10 +1025,137 @@ function computeSweepsScore(
         "computeSweepsScore finished."
     );
 
-
+    const plotDataUrl =
+        createSweepsPlot(scores);
+    
     return {
         scores,
         scoresText,
-        summaryText
+        summaryText,
+        plotDataUrl
     };
+}
+
+function createSweepsPlot(scores) {
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 1000;
+    canvas.height = 600;
+
+    const ctx = canvas.getContext("2d");
+
+    const left = 70;
+    const right = 30;
+    const top = 30;
+    const bottom = 60;
+
+    const width = canvas.width - left - right;
+    const height = canvas.height - top - bottom;
+
+    const maxScore = Math.max(...scores);
+    const minScore = Math.min(...scores);
+
+    // white background
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // axes
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(left, top);
+    ctx.lineTo(left, top + height);
+    ctx.lineTo(left + width, top + height);
+    ctx.stroke();
+
+    // score line
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+
+    scores.forEach((score, i) => {
+
+        const x =
+            left +
+            (i / (scores.length - 1)) * width;
+
+        const y =
+            top +
+            height -
+            ((score - minScore) /
+                (maxScore - minScore || 1)) *
+                height;
+
+        if (i === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    });
+
+    ctx.stroke();
+
+    // labels
+    ctx.fillStyle = "black";
+    ctx.font = "16px Arial";
+
+    ctx.textAlign = "center";
+    ctx.fillText(
+        "Position",
+        left + width / 2,
+        canvas.height - 15
+    );
+
+    ctx.save();
+    ctx.translate(20, top + height / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText("Sweep score", 0, 0);
+    ctx.restore();
+
+    // X-axis values
+    ctx.font = "12px Arial";
+
+    for (let i = 0; i <= 5; i++) {
+
+        const index =
+            Math.round(
+                i * (scores.length - 1) / 5
+            );
+
+        const x =
+            left + i * width / 5;
+
+        ctx.textAlign = "center";
+
+        ctx.fillText(
+            index.toString(),
+            x,
+            top + height + 20
+        );
+    }
+
+    // Y-axis values
+    for (let i = 0; i <= 5; i++) {
+
+        const value =
+            minScore +
+            i * (maxScore - minScore) / 5;
+
+        const y =
+            top +
+            height -
+            i * height / 5;
+
+        ctx.textAlign = "right";
+
+        ctx.fillText(
+            value.toFixed(2),
+            left - 8,
+            y + 4
+        );
+    }
+
+    return canvas.toDataURL("image/png");
 }
