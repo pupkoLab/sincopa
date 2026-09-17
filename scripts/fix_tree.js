@@ -326,6 +326,11 @@ document.addEventListener(
                         "sweepsSummaryText",
                         sweepsResult.summaryText
                     );
+
+                    sessionStorage.setItem(
+                        "sweepsPlot",
+                        sweepsResult.plotDataUrl
+                    );
                     
                     /*
                      * Go to results page
