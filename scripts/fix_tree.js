@@ -253,6 +253,13 @@ document.addEventListener(
                     }
 
                     /*
+                     * Step 0:
+                     * validate msaText, treeText
+                     */
+                    msaText =
+                        validateInput(msaText, treeText);
+                    
+                    /*
                      * Step 1:
                      * fix tree using the ORIGINAL MSA
                      */
@@ -385,12 +392,38 @@ document.addEventListener(
 
                     console.error(error);
 
-                    alert(
-                        "Tree processing failed:\n" +
-                        error.message
-                    );
+                    showInputError(error.message);
                 }
             }
         );
     }
 );
+
+function showInputError(message) {
+
+    let errorDiv =
+        document.getElementById("sincopaError");
+
+    if (!errorDiv) {
+
+        errorDiv =
+            document.createElement("div");
+
+        errorDiv.id = "sincopaError";
+        errorDiv.className = "container";
+        errorDiv.style.width = "850px";
+        errorDiv.style.margin = "20px auto";
+        errorDiv.style.fontSize = "20px";
+        errorDiv.style.color = "red";
+
+        const form =
+            document.getElementById("form");
+
+        form.parentNode.insertBefore(
+            errorDiv,
+            form
+        );
+    }
+
+    errorDiv.textContent = message;
+}
