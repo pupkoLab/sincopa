@@ -336,7 +336,7 @@ document.addEventListener(
                      * Go to results page
                      */
                     window.location.href =
-                        "results_fix_tree.html";
+                        "results.html";
 
                 }
                 catch (error) {
