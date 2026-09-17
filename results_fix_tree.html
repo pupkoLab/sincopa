@@ -38,6 +38,10 @@
 </p>   
     
 <p id="removedTaxa"></p>
+
+<h3>SINCOPA scores</h3>
+
+<pre id="sweepsScoresPreview"></pre>
     
 <p>
     <a href="index.html">Run another analysis</a>
@@ -271,6 +275,24 @@ else {
     document.getElementById("downloadControl")
         .style.display =
             "none";
+}
+
+/*
+ * ---------------------------------------------------------
+ * sweep score
+ * ---------------------------------------------------------
+ */
+    
+const sweepsScoresText =
+    sessionStorage.getItem("sweepsScoresText");
+
+if (sweepsScoresText) {
+    document.getElementById("sweepsScoresPreview").textContent =
+        sweepsScoresText;
+}
+else {
+    document.getElementById("sweepsScoresPreview").textContent =
+        "No SINCOPA scores available.";
 }
     
 </script>
