@@ -41,7 +41,7 @@
 
 <h3>SINCOPA scores</h3>
 
-<pre id="sweepsScoresPreview"></pre>
+<a id="downloadSweepsScores">Download sweeps_scores.txt</a>
     
 <p>
     <a href="index.html">Run another analysis</a>
@@ -287,12 +287,22 @@ const sweepsScoresText =
     sessionStorage.getItem("sweepsScoresText");
 
 if (sweepsScoresText) {
-    document.getElementById("sweepsScoresPreview").textContent =
-        sweepsScoresText;
-}
-else {
-    document.getElementById("sweepsScoresPreview").textContent =
-        "No SINCOPA scores available.";
+
+    const scoresBlob =
+        new Blob([sweepsScoresText], { type: "text/plain" });
+
+    const scoresUrl =
+        URL.createObjectURL(scoresBlob);
+
+    const scoresLink =
+        document.getElementById("downloadSweepsScores");
+
+    scoresLink.href = scoresUrl;
+    scoresLink.download = "sweeps_scores.txt";
+
+} else {
+
+    document.getElementById("downloadSweepsScores").style.display = "none";
 }
     
 </script>
