@@ -196,29 +196,61 @@ document.addEventListener(
                     const jobTitle =
                         document.getElementById("job_title").value.trim();
                     
-                    const msaFile =
-                        document.getElementById("msa_file").files[0];
-
-                    const treeFile =
-                        document.getElementById("tree_file").files[0];
-
-
-                    if (!msaFile) {
-                        alert("Please select a DNA MSA file.");
-                        return;
+                    const inputIsProvidedAsText =
+                        document.getElementById("input_is_provided_as_text").checked;
+                    
+                    let msaText;
+                    let treeText;
+                    let msaFileName;
+                    let treeFileName;
+                    
+                    if (inputIsProvidedAsText) {
+                    
+                        // Read MSA and tree directly from the textareas
+                        msaText =
+                            document.getElementById("msa_text").value.trim();
+                    
+                        treeText =
+                            document.getElementById("tree_text").value.trim();
+                    
+                        if (!msaText) {
+                            throw new Error("Please provide the multiple sequence alignment text.");
+                        }
+                    
+                        if (!treeText) {
+                            throw new Error("Please provide the phylogenetic tree text.");
+                        }
+                    
+                        // Used on results.html and in the SINCOPA summary
+                        msaFileName = "raw text";
+                        treeFileName = "raw text";
+                    
+                    } else {
+                    
+                        // Read uploaded files
+                        const msaFile =
+                            document.getElementById("msa_file").files[0];
+                    
+                        const treeFile =
+                            document.getElementById("tree_file").files[0];
+                    
+                        if (!msaFile) {
+                            throw new Error("Please select a multiple sequence alignment file.");
+                        }
+                    
+                        if (!treeFile) {
+                            throw new Error("Please select a phylogenetic tree file.");
+                        }
+                    
+                        msaText =
+                            await msaFile.text();
+                    
+                        treeText =
+                            await treeFile.text();
+                    
+                        msaFileName = msaFile.name;
+                        treeFileName = treeFile.name;
                     }
-
-                    if (!treeFile) {
-                        alert("Please select a phylogenetic tree file.");
-                        return;
-                    }
-
-
-                    const msaText =
-                        await msaFile.text();
-
-                    const treeText =
-                        await treeFile.text();
 
                     /*
                      * Step 1:
@@ -256,7 +288,7 @@ document.addEventListener(
                         msaResult.fixedMsa,
                         homoplasyResult.homoplasyText,
                         50,
-                        msaFile.name
+                        msaFileName
                     );
                     
                     /*
@@ -276,7 +308,7 @@ document.addEventListener(
                     
                     sessionStorage.setItem(
                         "treeFileName",
-                        treeFile.name
+                        treeFileName
                     );
                     
                     
@@ -290,7 +322,7 @@ document.addEventListener(
                     
                     sessionStorage.setItem(
                         "msaFileName",
-                        msaFile.name
+                        msaFileName
                     );
                     
                     sessionStorage.setItem(
@@ -301,6 +333,11 @@ document.addEventListener(
                     sessionStorage.setItem(
                         "msaTrimmedLength",
                         msaResult.trimmedLength
+                    );
+
+                    sessionStorage.setItem(
+                        "inputIsProvidedAsText",
+                        inputIsProvidedAsText ? "true" : "false"
                     );
                     
                     /*
