@@ -893,17 +893,13 @@ function makeSweepsSummary(
         above05
     ];
 
+    const header =
+    "msa_name,max_score,number_of_sequences,centrality,msa_length," +
+    "window_size,index_of_max,mean_score,median_score,max_mean_division," +
+    "max_median_division,relative_location_of_peak,apd,pi," +
+    "above95,above75,above50,above25,above05";
 
-    /*
-     * Python:
-     *
-     * ','.join(
-     *   [meta_data[0]] +
-     *   [f'{abs(score):.4f}'
-     *    for score in meta_data[1:]]
-     * )
-     */
-    return (
+    const data =
         metadata[0]
         +
         ","
@@ -914,10 +910,9 @@ function makeSweepsSummary(
                 value =>
                     Math.abs(value).toFixed(4)
             )
-            .join(",")
-        +
-        "\n"
-    );
+            .join(",");
+    
+    return header + "\n" + data + "\n";
 }
 
 
