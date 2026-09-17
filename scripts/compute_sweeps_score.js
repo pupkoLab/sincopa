@@ -893,26 +893,20 @@ function makeSweepsSummary(
         above05
     ];
 
-    const header =
-    "msa_name,max_score,number_of_sequences,centrality,msa_length," +
-    "window_size,index_of_max,mean_score,median_score,max_mean_division," +
-    "max_median_division,relative_location_of_peak,apd,pi," +
-    "above95,above75,above50,above25,above05";
-
     const data =
-        metadata[0]
-        +
-        ","
-        +
-        metadata
-            .slice(1)
-            .map(
-                value =>
-                    Math.abs(value).toFixed(4)
-            )
-            .join(",");
-    
-    return header + "\n" + data + "\n";
+    metadata[0]
+    +
+    ","
+    +
+    metadata
+        .slice(1)
+        .map(
+            value =>
+                Math.abs(value).toFixed(4)
+        )
+        .join(",");
+
+    return data + "\n";
 }
 
 
