@@ -629,130 +629,83 @@ function getPairwiseDistance(seq1, seq2) {
  * using sequence values and their frequencies.
  */
 function getAveragePairwiseDistanceAndPi(
+    headers,
     sequences,
     msaLength
 ) {
 
-    const numberOfSpecies =
-        sequences.length;
+    const numberOfSpecies = headers.length;
 
-
-    const numberOfPairs =
-        numberOfSpecies *
-        (numberOfSpecies - 1) /
-        2;
-
-
-    /*
-     * Count identical sequences.
-     */
-    const sequenceCounts =
-        new Map();
-
-
-    for (const sequence of sequences) {
-
-        sequenceCounts.set(
-            sequence,
-            (sequenceCounts.get(sequence) || 0) + 1
-        );
-    }
-
-
-    const uniqueSequences =
-        Array.from(
-            sequenceCounts.keys()
-        );
-
+    const numOfPairs =
+        numberOfSpecies * (numberOfSpecies - 1) / 2;
 
     let totalRelativePairwiseDistance = 0;
     let pi = 0;
 
-
     /*
-     * APD is calculated over all sequence pairs,
-     * including repeated identical sequences.
+     * Reproduce the Python code exactly:
+     *
+     * sequence2count[header] =
+     *     sequence2count.get(sequence, 0) + 1
+     *
+     * Since the dictionary is keyed by headers, looking up
+     * a sequence normally returns 0, so each header gets 1.
      */
-    for (
-        let i = 0;
-        i < sequences.length - 1;
-        i++
-    ) {
+    const sequence2count = new Map();
 
-        for (
-            let j = i + 1;
-            j < sequences.length;
-            j++
-        ) {
+    for (let i = 0; i < headers.length; i++) {
 
-            totalRelativePairwiseDistance +=
-                getPairwiseDistance(
-                    sequences[i],
-                    sequences[j]
-                ) / msaLength;
-        }
+        const header = headers[i];
+        const sequence = sequences[i];
+
+        sequence2count.set(
+            header,
+            (sequence2count.get(sequence) || 0) + 1
+        );
     }
 
+    const sequences2frequency = new Map();
 
-    /*
-     * pi calculation based on unique sequence
-     * frequencies, following the formula in
-     * the Python implementation.
-     */
-    for (
-        let i = 0;
-        i < uniqueSequences.length - 1;
-        i++
-    ) {
+    for (const [key, count] of sequence2count) {
 
-        for (
-            let j = i + 1;
-            j < uniqueSequences.length;
-            j++
-        ) {
+        sequences2frequency.set(
+            key,
+            count / numberOfSpecies
+        );
+    }
 
-            const sequence1 =
-                uniqueSequences[i];
+    const keys =
+        Array.from(sequence2count.keys());
 
-            const sequence2 =
-                uniqueSequences[j];
+    for (let i = 0; i < keys.length - 1; i++) {
 
+        for (let j = i + 1; j < keys.length; j++) {
 
-            const frequency1 =
-                sequenceCounts.get(sequence1) /
-                numberOfSpecies;
+            const seq1 = keys[i];
+            const seq2 = keys[j];
 
-            const frequency2 =
-                sequenceCounts.get(sequence2) /
-                numberOfSpecies;
-
-
-            const relativeDistance =
+            const apd =
                 getPairwiseDistance(
-                    sequence1,
-                    sequence2
+                    seq1,
+                    seq2
                 ) / msaLength;
 
+            totalRelativePairwiseDistance += apd;
 
             pi +=
                 2 *
-                frequency1 *
-                frequency2 *
-                relativeDistance;
+                sequences2frequency.get(seq1) *
+                sequences2frequency.get(seq2) *
+                apd;
         }
     }
 
-
-    const apd =
-        numberOfPairs === 0
-            ? 0
-            : totalRelativePairwiseDistance /
-              numberOfPairs;
-
-
     return {
-        apd,
-        pi
+        apd:
+            totalRelativePairwiseDistance /
+            numOfPairs,
+
+        pi: pi
     };
 }
 
@@ -820,10 +773,11 @@ function makeSweepsSummary(
     msaName,
     scores,
     windowSize,
+    headers,
     sequences,
     msaLength
 ) {
-
+    
     const numberOfSequences =
         sequences.length;
 
@@ -871,10 +825,11 @@ function makeSweepsSummary(
 
 
     const diversity =
-        getAveragePairwiseDistanceAndPi(
-            sequences,
-            msaLength
-        );
+    getAveragePairwiseDistanceAndPi(
+        headers,
+        sequences,
+        msaLength
+    );
 
 
     let above05 = 0;
@@ -1063,6 +1018,7 @@ function computeSweepsScore(
             msaName,
             scores,
             windowSize,
+            msa.headers,
             msa.sequences,
             msa.msaLength
         );
