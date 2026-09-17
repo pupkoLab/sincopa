@@ -72,7 +72,7 @@
         </nav>
 
        <!-- page content -->
-        <div style="padding-top: 350px;">
+       <div id="pageContent">
         
             <!-- running parameters section -->
         
@@ -139,6 +139,13 @@
          <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <script>
+
+      const navHeight =
+            document.getElementById("nav").getBoundingClientRect().height;
+        
+      document.getElementById("pageContent").style.paddingTop =
+            (navHeight + 20) + "px";
+        
       const fixedMsa =
           sessionStorage.getItem("fixedMsa");
       
