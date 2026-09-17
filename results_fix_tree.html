@@ -41,8 +41,9 @@
 
 <h3>SINCOPA scores</h3>
 
-<a id="downloadSweepsScores">Download sweeps_scores.txt</a>
-<a id="downloadSweepsSummary">Download sweeps_summary.txt</a>
+<p><a id="downloadSweepsScores">Download sweeps_scores.txt</a></p>
+<p><a id="downloadSweepsSummary">Download sweeps_summary.txt</a></p>
+<p><a id="downloadSweepsPlot">Download sweeps_scores.png</a></p>
     
 <p>
     <a href="index.html">Run another analysis</a>
@@ -326,6 +327,24 @@ if (sweepsSummaryText) {
 } else {
 
     document.getElementById("downloadSweepsSummary").style.display = "none";
+}
+
+const sweepsPlot =
+    sessionStorage.getItem("sweepsPlot");
+
+if (sweepsPlot) {
+
+    const plotLink =
+        document.getElementById("downloadSweepsPlot");
+
+    plotLink.href = sweepsPlot;
+    plotLink.download = "sweeps_scores.png";
+
+} else {
+
+    document.getElementById(
+        "downloadSweepsPlot"
+    ).style.display = "none";
 }
     
 </script>
