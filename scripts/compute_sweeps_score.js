@@ -1026,7 +1026,11 @@ function computeSweepsScore(
     );
 
     const plotDataUrl =
-        createSweepsPlot(scores);
+        createSweepsPlot(
+            scores,
+            msaName,
+            msa.sequences.length
+        );
     
     return {
         scores,
@@ -1036,7 +1040,7 @@ function computeSweepsScore(
     };
 }
 
-function createSweepsPlot(scores) {
+function createSweepsPlot(scores, msaName, numberOfSequences) {
 
     const canvas = document.createElement("canvas");
     canvas.width = 1000;
@@ -1044,10 +1048,10 @@ function createSweepsPlot(scores) {
 
     const ctx = canvas.getContext("2d");
 
-    const left = 70;
+    const left = 80;
     const right = 30;
-    const top = 30;
-    const bottom = 60;
+    const top = 70;
+    const bottom = 70;
 
     const width = canvas.width - left - right;
     const height = canvas.height - top - bottom;
@@ -1055,11 +1059,22 @@ function createSweepsPlot(scores) {
     const maxScore = Math.max(...scores);
     const minScore = Math.min(...scores);
 
-    // white background
+    // White background
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // axes
+    // Title
+    ctx.fillStyle = "black";
+    ctx.font = "20px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        `SINCOPA Scores for ${msaName} (across ${numberOfSequences} sequences)`,
+        canvas.width / 2,
+        30
+    );
+
+    // Axes
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
 
@@ -1069,7 +1084,7 @@ function createSweepsPlot(scores) {
     ctx.lineTo(left + width, top + height);
     ctx.stroke();
 
-    // score line
+    // Score line
     ctx.strokeStyle = "blue";
     ctx.lineWidth = 1;
 
@@ -1097,24 +1112,38 @@ function createSweepsPlot(scores) {
 
     ctx.stroke();
 
-    // labels
+    // X axis label
     ctx.fillStyle = "black";
     ctx.font = "16px Arial";
-
     ctx.textAlign = "center";
+
     ctx.fillText(
-        "Position",
+        "Window #",
         left + width / 2,
-        canvas.height - 15
+        canvas.height - 20
     );
 
+    // Y axis label
     ctx.save();
-    ctx.translate(20, top + height / 2);
+
+    ctx.translate(
+        22,
+        top + height / 2
+    );
+
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText("Sweep score", 0, 0);
+
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+        "SINCOPA Score",
+        0,
+        0
+    );
+
     ctx.restore();
 
-    // X-axis values
+    // X axis tick values
     ctx.font = "12px Arial";
 
     for (let i = 0; i <= 5; i++) {
@@ -1136,7 +1165,7 @@ function createSweepsPlot(scores) {
         );
     }
 
-    // Y-axis values
+    // Y axis tick values
     for (let i = 0; i <= 5; i++) {
 
         const value =
