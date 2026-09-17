@@ -42,6 +42,7 @@
 <h3>SINCOPA scores</h3>
 
 <a id="downloadSweepsScores">Download sweeps_scores.txt</a>
+<a id="downloadSweepsSummary">Download sweeps_summary.txt</a>
     
 <p>
     <a href="index.html">Run another analysis</a>
@@ -303,6 +304,28 @@ if (sweepsScoresText) {
 } else {
 
     document.getElementById("downloadSweepsScores").style.display = "none";
+}
+
+const sweepsSummaryText =
+    sessionStorage.getItem("sweepsSummaryText");
+
+if (sweepsSummaryText) {
+
+    const summaryBlob =
+        new Blob([sweepsSummaryText], { type: "text/plain" });
+
+    const summaryUrl =
+        URL.createObjectURL(summaryBlob);
+
+    const summaryLink =
+        document.getElementById("downloadSweepsSummary");
+
+    summaryLink.href = summaryUrl;
+    summaryLink.download = "sweeps_summary.txt";
+
+} else {
+
+    document.getElementById("downloadSweepsSummary").style.display = "none";
 }
     
 </script>
