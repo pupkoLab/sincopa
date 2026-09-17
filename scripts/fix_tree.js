@@ -247,6 +247,14 @@ document.addEventListener(
                             msaResult.fixedMsa,
                             treeResult.fixedTree
                         );
+
+                    const sweepsResult =
+                    computeSweepsScore(
+                        msaResult.fixedMsa,
+                        homoplasyResult.homoplasyText,
+                        50,
+                        msaFile.name
+                    );
                     
                     /*
                      * Save fixed tree
@@ -303,6 +311,20 @@ document.addEventListener(
                     sessionStorage.setItem(
                         "controlText",
                         homoplasyResult.controlText
+                    );
+
+                    /*
+                     * Save sweep scores results
+                     */
+                    
+                   sessionStorage.setItem(
+                        "sweepsScoresText",
+                        sweepsResult.scoresText
+                    );
+                    
+                    sessionStorage.setItem(
+                        "sweepsSummaryText",
+                        sweepsResult.summaryText
                     );
                     
                     /*
