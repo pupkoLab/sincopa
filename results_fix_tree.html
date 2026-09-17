@@ -346,6 +346,88 @@ if (sweepsPlot) {
         "downloadSweepsPlot"
     ).style.display = "none";
 }
+
+document.getElementById("downloadAllResults").addEventListener(
+    "click",
+    async function(event) {
+
+        event.preventDefault();
+
+        const fixedMsa =
+            sessionStorage.getItem("fixedMsa");
+
+        const fixedTree =
+            sessionStorage.getItem("fixedTree");
+
+        const homoplasyText =
+            sessionStorage.getItem("homoplasyText");
+
+        const sweepsScoresText =
+            sessionStorage.getItem("sweepsScoresText");
+
+        const sweepsSummaryText =
+            sessionStorage.getItem("sweepsSummaryText");
+
+        const sweepsPlot =
+            sessionStorage.getItem("sweepsPlot");
+
+        const zip = new JSZip();
+
+        // Text files
+        if (fixedMsa) {
+            zip.file("msa_fixed.fasta", fixedMsa);
+        }
+
+        if (fixedTree) {
+            zip.file("tree_fixed.newick", fixedTree);
+        }
+
+        if (homoplasyText) {
+            zip.file("homoplasy.txt", homoplasyText);
+        }
+
+        if (sweepsScoresText) {
+            zip.file("sweeps_scores.txt", sweepsScoresText);
+        }
+
+        if (sweepsSummaryText) {
+            zip.file("sweeps_summary.txt", sweepsSummaryText);
+        }
+
+        // PNG plot
+        if (sweepsPlot) {
+
+            const base64 =
+                sweepsPlot.split(",")[1];
+
+            zip.file(
+                "sweeps_scores.png",
+                base64,
+                { base64: true }
+            );
+        }
+
+        const zipBlob =
+            await zip.generateAsync({
+                type: "blob"
+            });
+
+        const url =
+            URL.createObjectURL(zipBlob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
+        link.download = "sincopa_results.zip";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(url);
+    }
+);
     
 </script>
 
