@@ -1056,8 +1056,8 @@ function createSweepsPlot(scores, msaName, numberOfSequences) {
     const width = canvas.width - left - right;
     const height = canvas.height - top - bottom;
 
-    const maxScore = Math.max(...scores);
-    const minScore = Math.min(...scores);
+    const maxScore = 1; // Math.max(...scores);
+    const minScore = 0; // Math.min(...scores);
 
     // White background
     ctx.fillStyle = "white";
